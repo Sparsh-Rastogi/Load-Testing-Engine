@@ -3,16 +3,40 @@
 namespace common {
 
 ThreadPool::ThreadPool(size_t threads) {
-    // TODO(Developer): Initialize threads in the pool and start task loop.
-    (void)threads;
+    for (size_t i = 0; i < threads; ++i) {
+        workers_.emplace_back([this]() {
+            while (true) {
+                std::function<void()> task;
+                {
+                    std::unique_lock<std::mutex> lock(this->queue_mutex_);
+                    this->cv_.wait(lock, [this]() { return this->stop_ || !this->tasks_.empty(); });
+
+                    if (this->stop_ && this->tasks_.empty()) {
+                        return;
+                    }
+
+                    task = std::move(this->tasks_.front());
+                    this->tasks_.pop();
+                }
+                // Run task outside lock boundary
+                task();
+            }
+        });
+    }
 }
 
 ThreadPool::~ThreadPool() {
-    // TODO(Developer): Gracefully shut down threads.
-}
+    {
+        std::unique_lock<std::mutex> lock(queue_mutex_);
+        stop_ = true;
+    }
+    cv_.notify_all();
 
-void ThreadPool::enqueue([[maybe_unused]] std::function<void()> task) {
-    // TODO(Developer): Enqueue task, notifying workers.
+    for (std::thread& worker : workers_) {
+        if (worker.joinable()) {
+            worker.join();
+        }
+    }
 }
 
 }  // namespace common

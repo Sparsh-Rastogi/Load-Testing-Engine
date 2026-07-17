@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  sample-server:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+
+  coordinator:
+    build:
+      context: .
+      target: coordinator
+    ports:
+      - "8080:8080"
+    command: ["/app/coordinator.conf"]
+    depends_on:
+      - sample-server
+
+  worker-1:
+    build:
+      context: .
+      target: worker
+    command: ["/app/worker-1.conf"]
+    depends_on:
+      - coordinator
+
+  worker-2:
+    build:
+      context: .
+      target: worker
+    command: ["/app/worker-2.conf"]
+    depends_on:
+      - coordinator

@@ -26,7 +26,7 @@ target_include_directories(run_coordinator_tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 target_link_libraries(run_coordinator_tests PRIVATE
-    common
+    coordinator_lib
     gtest_main
 )
 
@@ -37,7 +37,7 @@ target_include_directories(run_worker_tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 target_link_libraries(run_worker_tests PRIVATE
-    common
+    worker_lib
     gtest_main
 )
 

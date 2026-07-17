@@ -16,6 +16,9 @@ struct WorkerConfig {
 struct CoordinatorConfig {
     int port{0};
     std::vector<std::string> worker_hosts;
+    std::string target_url;
+    int concurrency{1};
+    int duration_seconds{0};
 };
 
 class Config {

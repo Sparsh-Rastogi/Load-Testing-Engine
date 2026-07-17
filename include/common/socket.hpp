@@ -24,7 +24,15 @@ public:
     std::string receive(size_t max_bytes = 4096);
     void close();
 
+    // Server-side operations
+    bool bind(int port);
+    bool listen(int backlog = 10);
+    Socket accept();
+
     int fd() const { return fd_; }
+
+    // Construct wrapper from an existing file descriptor
+    explicit Socket(int fd);
 
 private:
     int fd_{-1};

@@ -22,6 +22,7 @@ struct HttpResponse {
     std::string status_message;
     std::unordered_map<std::string, std::string> headers;
     std::string body;
+    double latency_ms{0.0};
 
     // TODO(Developer): Implement HTTP response parsing.
     static HttpResponse parse(const std::string& raw_response);
